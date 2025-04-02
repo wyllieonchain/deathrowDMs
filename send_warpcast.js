@@ -47,6 +47,12 @@ async function sendDirectMessage(apiKey, recipientFid, message) {
     return await response.json();
   } catch (error) {
     console.error(`Error sending message to FID ${recipientFid}:`, error);
+    if (error.message.includes('rate limit') || error.message.includes('429')) {
+      console.log('Rate limit hit, waiting for 30 seconds...');
+      fs.appendFileSync('hugeWalletsList.txt', fid + '\n');
+      console.log(`Added FID ${fid} back to hugeWalletsList.txt (rate limit error)`);
+      await new Promise(resolve => setTimeout(resolve, 30000));
+    }
     throw error;
   }
 }
