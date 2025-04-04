@@ -124,7 +124,7 @@ const sendMessages = async () => {
     console.log(`Daily message count so far: ${dailyCount}`);
     
     // Check if we've already hit the daily limit
-    const DAILY_LIMIT = 5000;
+    const DAILY_LIMIT = 4950;
     if (dailyCount >= DAILY_LIMIT) {
       console.log(`⚠️ Daily limit of ${DAILY_LIMIT} messages already reached. Try again tomorrow.`);
       process.exit(0);
