@@ -1,0 +1,62 @@
+stages:
+  - package
+  - deploy
+
+variables:
+  NODE_ENV: production
+
+cache:
+  paths:
+    - node_modules/
+
+before_script:
+  - npm install
+
+package:
+  stage: package
+  image: node:18.17.0
+  script:
+    - echo "Installing zip utility..."
+    - apt-get update && apt-get install -y zip
+    # Remove old package folder if it exists
+    - rm -rf package
+    # Create the deployment package folder
+    - mkdir -p package/artifacts/contracts
+    # Copy JS files (adjust these if needed)
+    - cp index.js package/
+    - cp rebase.js package/
+    - cp quotes.js package/
+    # Copy dependencies
+    - cp -r node_modules package/
+    # Copy artifacts if needed
+    - cp -r artifacts/contracts/. package/artifacts/contracts/
+    # Create a ZIP package
+    - cd package && zip -r lambda_package.zip . && cd ..
+  artifacts:
+    paths:
+      - package/lambda_package.zip
+  only:
+    - main
+    - dev
+
+deploy:
+  stage: deploy
+  image: amazonlinux:2
+  dependencies:
+    - package
+
+  before_script:
+    - yum install -y zip unzip curl
+    - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    - unzip awscliv2.zip
+    - ./aws/install
+    - aws --version
+  script:
+    - echo "Deploying to AWS Lambda..."
+    - echo "Lambda function name $LAMBDA_FUNCTION_NAME"
+    - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://package/lambda_package.zip
+  only:
+    - main
+  environment:
+    name: production
+    url: https://console.aws.amazon.com/lambda/home

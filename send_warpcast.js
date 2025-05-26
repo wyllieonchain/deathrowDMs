@@ -15,7 +15,7 @@ if (!API_KEY) {
 }
 
 // Your message
-const MESSAGE = "Hey! I'm launching a new onchain game, it's speculative, controversial, and volatile. Check it out and give us a follow on X if you're intrigued. We'll be giving out WL spots soon. https://x.com/DeathRowdotfun";
+const MESSAGE = "Hey! I’m building a new way for people to “trade rivalries”… with leverage. Every market starts at 0 and can trade from +∞ to -∞ depending on buys and sells. \n\n Elon Musk vs Sam Altman \n Taylor vs Kanye\n Toly vs Vitalik\n etc. \n\n Our X account is https://x.com/PerpAllfun/.  Let me know if you want to beta test the app.";
 
 // Add a timestamp to log when the script was started with the current message
 console.log(`Script started at ${new Date().toISOString()} with message: "${MESSAGE}"`);
